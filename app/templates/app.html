@@ -100,7 +100,8 @@
             format,
             name: fileInput.files[0].name,
             dpi,
-            imgFormat
+            imgFormat,
+            time: new Date().getTime() // Add a timestamp to prevent caching issues
           })
         })
           .then(response => {

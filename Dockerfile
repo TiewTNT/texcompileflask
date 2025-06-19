@@ -28,4 +28,4 @@ COPY . .
 EXPOSE 8000
 
 # Start app using Gunicorn and the correct module path
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app.app:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:app"]

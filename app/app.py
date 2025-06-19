@@ -85,9 +85,9 @@ def process_json(data):
         ]
         success, out, err = run_subprocess(args)
     print('LaTeX STDOUT:', out)
-    print('LaTeX STDERR:', err)
-    if not success:
-        raise RuntimeError(f"LaTeX failed: {err or out}")
+    # print('LaTeX STDERR:', err)
+    # if not success:
+    #     raise RuntimeError(f"LaTeX failed: {err or out}")
 
     # If another format is requested, convert with pandoc
     if format != 'pdf' and format != 'bmp':
@@ -139,12 +139,13 @@ def api():
         hashed, format, name = process_json(incoming_data)
         print(format, '====================')
         path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
+        print(path, '@@@@@@')
         if not os.path.exists(path):
             print(path, '←')
             return jsonify({"error": f"File generation failed ({path} does not exist.)"}), 500
 
         return send_file(
-            path,
+            fr'.\temp\{hashed}.{format}',
             mimetype=MIMETYPES.get(format, 'application/octet-stream'),
             as_attachment=True,
             download_name=f"{name}.{format}"

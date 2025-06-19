@@ -1,31 +1,19 @@
-FROM python:3.11-slim
+FROM danteev/texlive:full          # includes texlive-full *and* pandoc
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3.11 python3.11-venv python3-pip imagemagick \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \
+    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
 WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
-# Install system packages
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    ca-certificates \
-    gnupg \
-    imagemagick \
-    pandoc \
-    texlive-full \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python packages
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
 COPY . .
 
-# Expose Gunicorn port
 EXPOSE 8000
-
-# Start app using Gunicorn and the correct module path
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app.app:app"]

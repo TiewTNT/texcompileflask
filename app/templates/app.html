@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>PDF Generator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ledger&display=swap" rel="stylesheet"><!-- Ledger font for headings -->
+</head>
+
+<body>
+  <div style="display: grid; grid-template-columns: 1fr 1fr;">
+    <div style="margin-left: auto">
+      <h1>Upload a .tex File</h1>
+      <input type="file" id="texFile" accept=".tex"><br><br>
+
+      <div class="gen-form">
+        <label for="engine">Select LaTeX Engine:</label>
+        <select id="engine">
+          <option value="pdflatex">pdflatex</option>
+          <option value="xelatex">xelatex</option>
+          <option value="lualatex">lualatex</option>
+          <option value="context">ConTeXt</option>
+        </select><br><br>
+
+        <label for="format">Output Format:</label>
+        <select id="format">
+          <option value="pdf">PDF</option>
+          <option value="html">HTML</option>
+          <option value="md">Markdown</option>
+          <option value="bmp">Bitmap</option>
+        </select><br><br>
+
+        <div id="bmpOptions" style="display: none;">
+          <input type="number" id="dpi" value="200" min="5" max="999" />
+          <label for="imgFormat">Image Format:</label>
+          <select id="imgFormat">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+            <option value="webp">WEBP</option>
+            <option value="gif">GIF</option>
+            <option value="tiff">TIFF</option>
+            <option value="avif">AVIF</option>
+            <option value="bmp">BMP</option>
+          </select><br><br>
+        </div>
+        <script>
+          document.getElementById("format").addEventListener("change", function () {
+            const selectedValue = this.value;
+            const otherDiv = document.getElementById("bmpOptions");
+
+            if (selectedValue === "bmp") {
+              otherDiv.style.display = "block";
+            } else {
+              otherDiv.style.display = "none";
+            }
+          });
+        </script>
+      </div>
+
+      <button onclick="uploadFile()">Generate</button>
+    </div>
+    <div>
+      <p>This simple API is powered by TeXLive, including its packages, for PDF generation and Pandoc for document
+        type
+        conversion when you select HTML or Markdown. Flask is used here to make the website itself. ImageMagick is used
+        for the PDF to raster image conversion.</p>
+    </div>
+  </div>
+
+  </div>
+
+
+  <script>
+    function uploadFile() {
+      const fileInput = document.getElementById("texFile");
+      const engine = document.getElementById("engine").value;
+      const format = document.getElementById("format").value;
+      const dpi = document.getElementById("dpi").value;
+      const imgFormat = document.getElementById("imgFormat").value;
+
+      if (!fileInput.files.length) {
+        console.log("Please select a .tex file first.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const texContent = event.target.result;
+
+        fetch("/api", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tex: texContent,
+            engine,
+            format,
+            name: fileInput.files[0].name,
+            dpi,
+            imgFormat
+          })
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`${format.toUpperCase()} generation failed.`);
+            }
+            // Extract the filename from Content-Disposition
+            const cd = response.headers.get("Content-Disposition") || "";
+            const match = cd.match(/filename="?(.+?)"?($|;)/);
+            const filename = match ? match[1] : `file.${format}`;
+
+            return response.blob().then(blob => ({ blob, filename }));
+          })
+          .then(({ blob, filename }) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(error => console.log("Error: " + error.message));
+      };
+
+      reader.readAsText(fileInput.files[0]);
+    }
+  </script>
+
+</body>
+
+</html>

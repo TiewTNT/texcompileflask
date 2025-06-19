@@ -1,0 +1,88 @@
+body {
+    background-color: #343335;
+    color: #fcfff2;
+    font-family: Ledger, serif;
+    margin: 10%;
+    overflow: hidden;
+}
+
+select {
+    border: none;
+    background-color: #343335;
+    color: #fcfff2;
+    font-family: Ledger, serif;
+}
+
+input[type="file"] {
+    all: none;
+    border: none;
+    background-color: #343335;
+    color: #fcfff2;
+    font-family: Ledger, serif;
+    padding: 1rem;
+}
+
+input[type=file]::file-selector-button {
+    all: none;
+    border: none;
+    background-color: #343335;
+    color: #fcfff2;
+    font-family: Ledger, serif;
+    font-size: 1rem;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 0.7rem;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
+    transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+input[type=number] {
+    all: none;
+    border: none;
+    background-color: #343335;
+    color: #fcfff2;
+    font-family: Ledger, serif;
+    font-size: 1rem;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 0.7rem;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
+    transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+button {
+    all: none;
+    border: none;
+    background-color: #343335;
+    color: #fcfff2;
+    font-family: Ledger, serif;
+    font-size: 1rem;
+    padding: 1rem;
+    border-radius: 0.7rem;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
+    transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+button:active {
+    transform: scale(0.9);
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.55);
+}
+
+.gen-form {
+    margin-left: 2rem;
+}
+
+p {
+    width: 35%;
+    padding-left: 10%;
+    text-align: justify;
+    display: block;
+    margin-right: auto;
+}

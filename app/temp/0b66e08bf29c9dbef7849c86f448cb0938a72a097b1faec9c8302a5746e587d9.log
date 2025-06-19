@@ -1,0 +1,153 @@
+system          > 
+system          > ConTeXt  ver: 2025.06.12 14:21 LMTX  fmt: 2025.6.19  int: english/english
+system          > 
+system          > 'cont-new.mkxl' loaded
+open source     > level 1, order 1, name 'C:/texlive/2025/texmf-dist/tex/context/base/mkxl/cont-new.mkxl'
+csname overload > warning, protection level 3, control sequence 'newcontextversion', properties 'permanent protected', file 'C:/texlive/2025/texmf-dist/tex/context/base/mkxl/cont-new.mkxl', line 16
+system          > beware: some patches loaded from cont-new.mkiv
+close source    > level 1, order 1, name 'C:/texlive/2025/texmf-dist/tex/context/base/mkxl/cont-new.mkxl'
+system          > 'cont-sys.mkxl' loaded
+open source     > level 1, order 2, name 'C:/texlive/2025/texmf-dist/tex/context/texlive/cont-sys.mkxl'
+modules         > 'texlive' is loaded
+open source     > level 2, order 3, name 'C:/texlive/2025/texmf-dist/tex/context/modules/mkxl/m-texlive.mkxl'
+resolvers       > lua > loading file 'C:/texlive/2025/texmf-dist/tex/context/base/mkiv/data-tld.lua' succeeded
+close source    > level 2, order 3, name 'C:/texlive/2025/texmf-dist/tex/context/modules/mkxl/m-texlive.mkxl'
+close source    > level 1, order 3, name 'C:/texlive/2025/texmf-dist/tex/context/texlive/cont-sys.mkxl'
+
+system          > jobfiles > using path: temp
+system          > files > jobname './0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9', input './0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex', result '0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.pdf'
+fonts           > latin modern fonts are not preloaded
+languages       > language 'en' is active
+open source     > level 1, order 4, name './0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex'
+fonts           > preloading latin modern fonts (second stage)
+fonts           > 'fallback modern rm 12pt' is loaded
+pages           > flushing realpage 1, userpage 1, subpage 1
+close source    > level 1, order 4, name './0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex'
+backend         > xmp > using file 'C:/texlive/2025/texmf-dist/tex/context/base/mkiv/lpdf-pdx.xml'
+system          > start used files
+system          > text: 0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9
+system          > stop used files
+system          > start used files
+system          >    1: filename=publ-imp-default.lua filetype=lua foundname=C:/texlive/2025/texmf-dist/tex/context/base/mkiv/publ-imp-default.lua fullname=C:/texlive/2025/texmf-dist/tex/context/base/mkiv/publ-imp-default.lua usedmethod=database
+system          >    2: filename=cont-new.mkxl filetype=tex foundname=C:/texlive/2025/texmf-dist/tex/context/base/mkxl/cont-new.mkxl fullname=C:/texlive/2025/texmf-dist/tex/context/base/mkxl/cont-new.mkxl usedmethod=database
+system          >    3: filename=cont-sys.mkxl filetype=tex foundname=C:/texlive/2025/texmf-dist/tex/context/texlive/cont-sys.mkxl fullname=C:/texlive/2025/texmf-dist/tex/context/texlive/cont-sys.mkxl usedmethod=database
+system          >    4: filename=m-texlive.mkxl filetype=tex foundname=C:/texlive/2025/texmf-dist/tex/context/modules/mkxl/m-texlive.mkxl fullname=C:/texlive/2025/texmf-dist/tex/context/modules/mkxl/m-texlive.mkxl usedmethod=database
+system          >    5: filename=data-tld.lua filetype=tex format=tex foundname=C:/texlive/2025/texmf-dist/tex/context/base/mkiv/data-tld.lua fullname=C:/texlive/2025/texmf-dist/tex/context/base/mkiv/data-tld.lua usedmethod=database
+system          >    6: filename=lang-exc.lua filetype=lua foundname=C:/texlive/2025/texmf-dist/tex/context/base/mkiv/lang-exc.lua fullname=C:/texlive/2025/texmf-dist/tex/context/base/mkiv/lang-exc.lua usedmethod=database
+system          >    7: filename=lang-us.lua filetype=lua foundname=C:/texlive/2025/texmf-dist/tex/context/patterns/mkiv/lang-us.lua fullname=C:/texlive/2025/texmf-dist/tex/context/patterns/mkiv/lang-us.lua usedmethod=database
+system          >    8: filename=C:\Users\tntti\Dropbox\Tiew Python\texcompileflask\app\temp/0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex format=tex foundname=C:/Users/tntti/Dropbox/Tiew Python/texcompileflask/app/temp/0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex fullname=C:/Users/tntti/Dropbox/Tiew Python/texcompileflask/app/temp/0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex usedmethod=direct
+system          >    9: filename=context-libraries.tma filetype=lua foundname=C:/texlive/2025/texmf-dist/tex/context/base/mkxl/context-libraries.tma fullname=C:/texlive/2025/texmf-dist/tex/context/base/mkxl/context-libraries.tma usedmethod=database
+system          >   10: filename=lm.lfg filetype=tex foundname=C:/texlive/2025/texmf-dist/tex/context/fonts/mkiv/lm.lfg fullname=C:/texlive/2025/texmf-dist/tex/context/fonts/mkiv/lm.lfg usedmethod=database
+system          >   11: filename=lmroman10-regular filetype=otf format=otf foundname=C:/texlive/2025/texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf fullname=C:/texlive/2025/texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf usedmethod=database
+system          >   12: filename=modern-text.lfg filetype=tex foundname=C:/texlive/2025/texmf-dist/tex/context/fonts/mkiv/modern-text.lfg fullname=C:/texlive/2025/texmf-dist/tex/context/fonts/mkiv/modern-text.lfg usedmethod=database
+system          >   13: filename=latinmodern-math.otf filetype=otf format=otf foundname=C:/texlive/2025/texmf-dist/fonts/opentype/public/lm-math/latinmodern-math.otf fullname=C:/texlive/2025/texmf-dist/fonts/opentype/public/lm-math/latinmodern-math.otf usedmethod=database
+system          >   14: filename=modern-math.lfg filetype=tex foundname=C:/texlive/2025/texmf-dist/tex/context/fonts/mkiv/modern-math.lfg fullname=C:/texlive/2025/texmf-dist/tex/context/fonts/mkiv/modern-math.lfg usedmethod=database
+system          >   15: filename=common-math.lfg filetype=tex foundname=C:/texlive/2025/texmf-dist/tex/context/fonts/mkiv/common-math.lfg fullname=C:/texlive/2025/texmf-dist/tex/context/fonts/mkiv/common-math.lfg usedmethod=database
+system          >   16: filename=latinmodernmathcompanion-regular.otf filetype=otf format=otf foundname=C:/texlive/2025/texmf-dist/fonts/opentype/public/context/LatinModernMathCompanion-Regular.otf fullname=C:/texlive/2025/texmf-dist/fonts/opentype/public/context/LatinModernMathCompanion-Regular.otf usedmethod=database
+system          >   17: filename=lpdf-pdx.xml filetype=tex foundname=C:/texlive/2025/texmf-dist/tex/context/base/mkiv/lpdf-pdx.xml fullname=C:/texlive/2025/texmf-dist/tex/context/base/mkiv/lpdf-pdx.xml usedmethod=database
+system          > stop used files
+system          > start commandline options
+system          >   batchmode="true"
+system          >   currentrun="2"
+system          >   fulljobname="./0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex"
+system          >   input="./0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex"
+system          >   kindofrun="2"
+system          >   maxnofruns="9"
+system          >   path="temp"
+system          >   result="0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.pdf"
+system          >   texmfbinpath="C:/texlive/2025/bin/windows"
+system          > stop commandline options
+system          > start commandline files
+system          >    1: ./0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.tex
+system          > stop commandline files
+modules         > start used modules
+modules         >   loaded : *-texlive
+modules         > stop used modules
+system          > 
+system          > status after finishing run
+system          > 
+system          >   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+system          >           string       pool       hash     lookup       node      token     buffer      input       file       nest  parameter       save       font   language       mark     insert        mvl
+system          >   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+system          >   max    2097152  100000000    2097152    2097152  100000000   10000000  100000000     100000       2000      10000     100000     500000     100000      10000      10000        500        500
+system          >   min     150000   10000000     150000     150000   10000000    2000000    1000000      10000        500       1000      20000     100000        250        250         50         25         10
+system          >   set     500000   10000000     250000     250000   50000000   10000000   10000000     100000       2000      10000     100000     500000     100000        250        250        250         10
+system          >   stp     100000    1000000     100000     100000    5000000    1000000    1000000      10000        250       1000      10000      10000        250        250         50         25         10
+system          > 
+system          >   mem     150000    1011763     150000              10000000    2000000    1000000      10000        500       1000      20000      10000        250        250         50         25         10
+system          >   itm         16          1         16                     9          8          1         32         32         80          4         16          8          8         28         56         80
+system          >   ext          0          0          0          0          0          0          0          0          0          0          0          0    2486304         96          0          0          0
+system          >   all    2400000    1011763    2400000          1   90000000   16000000    1000000     320000      16000      80000      80000     160000    2488304       2096       1400       1400        800
+system          > 
+system          >   ini    2149030     993623          0      51861          0     573417                                                                                       0                                 
+system          >   ptr      52582                  7658      52565                582388          0          0          0          0          0          0          7          0          0         11          0
+system          >   top      52583                938216     262146       5998     584349        173         38          5         12         39        194        250        250         50         25         10
+system          >   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+system          > 
+system          >   current input type    : initial
+system          > 
+system          >   approximate memory    : 118851859 (113 MB)
+system          > 
+system          >   expansion depth       : min: 10000, max: 1000000, set: 10000, top: 5
+system          > 
+system          >   luabytecode registers : 1029
+system          >   luabytecode bytes     : 16480 (0 MB)
+system          >   luastate bytes now    : 79547856 (75 MB)
+system          >   luastate bytes max    : 79547856 (75 MB)
+system          > 
+system          >   file callbacks        : 114
+system          >   saved callbacks       : 111
+system          >   direct callbacks      : 4
+system          >   function callbacks    : 621
+system          >   value callbacks       : 428
+system          >   message callbacks     : 0
+system          >   bytecode callbacks    : 635
+system          > 
+system          >   mp instances          : 0
+system          >   mp estimated memory   : 0 (0 MB)
+system          >   mp file callbacks     : 0
+system          >   mp text callbacks     : 0
+system          >   mp script callbacks   : 0
+system          >   mp log callbacks      : 0
+system          > 
+system          >   total callbacks       : 1913
+system          >   mp total callbacks    : 0
+system          >   backend callbacks     : 0
+system          > 
+system          >   linebreak statistics  : context      calls     first    second     final  passonly   subpass
+system          > 
+system          >   linebreak statistics  : normal           4         4         0         3         0         0
+system          >   linebreak statistics  : vbox             3         3         0         0         0         0
+system          > 
+system          >   linebreak statistics  :                  7         7         0         3         0         0
+system          > 
+system          >   hyphenation state     : checked           4
+system          >   hyphenation state     : lists             4
+system          >   hyphenation state     : nothing           4
+system          >   hyphenation state     : words             4
+system          > 
+mkxl run stats  > used config file: selfautoparent:/texmfcnf.lua;selfautoparent:/texmf-dist/web2c/texmfcnf.lua
+mkxl run stats  > used cache path: C:/texlive/2025/texmf-var/luametatex-cache/context/a86c089b384a3076dc514ba966a1fac9
+mkxl run stats  > resource resolver: loadtime 0.110 seconds, 0 scans with scantime 0.000 seconds, 0 shared scans, 17 found files, scanned paths: <none>
+mkxl run stats  > stored bytecode data: 529 modules (0.251 sec), 106 tables (0.008 sec), 635 chunks (0.259 sec)
+mkxl run stats  > traced context lua functions: maxstack: 1871, freed: 0, unreachable: 1871
+mkxl run stats  > cleaned up reserved nodes: 76 nodes, 7 lists of 444
+mkxl run stats  > node memory usage: 9 attribute, 4 fontspec, 1 glue, 135 gluespec, 1 kern, 661 mathspec, 2 penalty, 29 specification, 2 temp
+mkxl run stats  > node list callback tasks: 17 unique task lists, 10 instances (re)created, 52 calls
+mkxl run stats  > used backend: pdf
+mkxl run stats  > randomizer: resumed with value 0.2631353557158792
+mkxl run stats  > jobdata time: 0.002 seconds saving, 0.000 seconds loading
+mkxl run stats  > callbacks: file: 114, saved: 111, direct: 4, function: 621, value: 428, message: 0, bytecode: 635, late 0, total: 1913 (1913 per page)
+mkxl run stats  > loaded tex modules: 1 requested, all found (*-texlive)
+mkxl run stats  > loaded patterns: en::1, load time: 0.000
+mkxl run stats  > loaded fonts: 3 files: latinmodernmathcompanion-regular.otf, latinmodern-math.otf, lmroman10-regular.otf
+mkxl run stats  > font engine: otf 3.144, afm 1.541, tfm 1.000, 5 instances, 2 shared in backend, 2 common vectors, 0 common hashes, load time 0.058 seconds 
+mkxl run stats  > math tweaking time: 0.017 seconds, 6 math goodie tables
+mkxl run stats  > font embedding time: 0.002 seconds, 1 fonts
+mkxl run stats  > result saved in file: 0b66e08bf29c9dbef7849c86f448cb0938a72a097b1faec9c8302a5746e587d9.pdf.pdf, compresslevel 1, objectcompresslevel 3, 5 streams, 0 uncompressed, 4 compressed, 1 not compressed, threshold 40
+mkxl run stats  > positions: 4 collected, 0 deltas, 0 shared partials, 0 partial entries
+mkxl run stats  > used platform: win64, type: windows, binary subtree: bin
+mkxl run stats  > used engine: luametatex version: 2.11.07, functionality level: 20250609, format id: 720, compiler: gcc
+mkxl run stats  > tex properties: 938216 hash slots used of 2097152, 52565 control sequences, approximate memory usage: 113 MB
+mkxl run stats  > lua properties: engine: lua 5.5, format 7, used memory: 79 MB, ctx: 75 MB, max: 75 MB, symbol mask: utf (τεχ)
+mkxl run stats  > runtime: 0.402 seconds, 1 processed pages, 1 shipped pages, 2.490 pages/second

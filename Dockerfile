@@ -1,7 +1,7 @@
-FROM danteev/texlive:full
+FROM texlive/texlive:latest-full
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        python3.11 python3.11-venv python3-pip imagemagick \
+        python3.11 python3.11-venv python3-pip imagemagick pandoc \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \

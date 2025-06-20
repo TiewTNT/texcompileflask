@@ -12,6 +12,7 @@ flask_cors.CORS(app)
 # current working directory.
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 TEMP_DIR = os.path.join(BASE_DIR, 'temp')
+print('Using temp directory:', TEMP_DIR)
 MIMETYPES = {
     'pdf': 'application/pdf',
     'html': 'text/html',

@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
-RUN python3 -m ensurepip --upgrade && \
-    python3 -m pip install --upgrade pip setuptools wheel
+RUN python -m ensurepip --upgrade && \
+    python -m pip install --upgrade pip setuptools wheel
 
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1

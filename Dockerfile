@@ -7,7 +7,7 @@ RUN apt-get update && \
 
 ENV VENV_PATH=/opt/venv
 RUN python3 -m venv $VENV_PATH
-ENV PATH="$VENV_PATH/bin:$PATH"      # makes `python`, `pip`, etc. point to venv
+ENV PATH="$VENV_PATH/bin:$PATH"
 
 RUN pip install --upgrade pip setuptools wheel
 

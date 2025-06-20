@@ -7,7 +7,11 @@ import os
 app = Flask(__name__)
 flask_cors.CORS(app)
 
-TEMP_DIR = 'temp'
+# Directory where temporary compilation files will be stored.  Use an absolute
+# path so Flask can reliably locate the generated output regardless of the
+# current working directory.
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+TEMP_DIR = os.path.join(BASE_DIR, 'temp')
 MIMETYPES = {
     'pdf': 'application/pdf',
     'html': 'text/html',
@@ -146,7 +150,7 @@ def api():
             return jsonify({"error": f"File generation failed ({path} does not exist.)"}), 500
 
         return send_file(
-            fr'.\temp\{hashed}.{format}',
+            path,
             mimetype=MIMETYPES.get(format, 'application/octet-stream'),
             as_attachment=True,
             download_name=f"{name}.{format}"

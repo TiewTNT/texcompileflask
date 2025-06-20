@@ -12,6 +12,7 @@ ENV PATH="$VENV_PATH/bin:$PATH"
 RUN pip install --upgrade pip setuptools wheel
 
 WORKDIR /app
+ENV PORT=8000
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

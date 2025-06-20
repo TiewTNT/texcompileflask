@@ -3,6 +3,8 @@ import flask_cors
 import subprocess
 import hashlib
 import os
+import zipfile
+import regex as re
 
 app = Flask(__name__)
 flask_cors.CORS(app)
@@ -15,6 +17,8 @@ TEMP_DIR = os.path.join(BASE_DIR, 'temp')
 print('Using temp directory:', TEMP_DIR)
 MIMETYPES = {
     'pdf': 'application/pdf',
+    'zip': 'application/zip',
+    'txt': 'text/plain',
     'html': 'text/html',
     'md': 'text/markdown',
     'png':  'image/png',
@@ -24,6 +28,7 @@ MIMETYPES = {
     'tiff': 'image/tiff',
     'avif': 'image/avif',
     'bmp':  'image/bmp',
+    'epub': 'application/epub+zip',
 }
 
 
@@ -71,40 +76,31 @@ def process_json(data):
     with open(tex_path, 'w', encoding='utf-8') as f:
         f.write(data.get('tex', 'user did not send TeX'))
 
-    # Compile with chosen LaTeX engine
-    if engine == "context":
-        args = [
-            'context',
-            '--batchmode',               # quiet mode (like nonstopmode)
-            f'--result={hashed}.pdf',
-            f'--path={TEMP_DIR}',
-            tex_filename.replace(os.sep, '/')
-        ]
-        success, out, err = run_subprocess(args, cwd=TEMP_DIR)
-    else:
-        args = [
-            engine,
-            f'-jobname={hashed}',
-            '-interaction=nonstopmode',
-            f'-output-directory={TEMP_DIR}',
-            tex_path.replace(os.sep, '/')
-        ]
-        success, out, err = run_subprocess(args)
-    print('LaTeX STDOUT:', out)
-    # print('LaTeX STDERR:', err)
-    # if not success:
-    #     raise RuntimeError(f"LaTeX failed: {err or out}")
-
-    # If another format is requested, convert with pandoc
-    if format != 'pdf' and format != 'bmp':
-        output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
-        pandoc_args = f"pandoc {tex_path.replace(os.sep, '/')} -o {output_path}"
-        success, out, err = run_subprocess(pandoc_args, shell=True)
-        print('Pandoc STDOUT:', out)
-        print('Pandoc STDERR:', err)
+    if format == 'pdf' or format == 'bmp':
+        if engine == "context":
+            args = [
+                'context',
+                '--batchmode',               # quiet mode (like nonstopmode)
+                f'--result={hashed}.pdf',
+                f'--path={TEMP_DIR}',
+                tex_filename.replace(os.sep, '/')
+            ]
+            success, out, err = run_subprocess(args, cwd=TEMP_DIR)
+        else:
+            args = [
+                engine,
+                f'-jobname={hashed}',
+                '-interaction=nonstopmode',
+                f'-output-directory={TEMP_DIR}',
+                tex_path.replace(os.sep, '/')
+            ]
+            success, out, err = run_subprocess(args)
+        print('LaTeX STDOUT:', out)
+        print('LaTeX STDERR:', err)
         if not success:
-            raise RuntimeError(f"Pandoc failed: {err or out}")
-    elif format == 'bmp':
+            raise RuntimeError(f"LaTeX failed: {err or out}")
+
+    if format == 'bmp':
         dpi = data.get('dpi', 200)
         pdf_path = os.path.join(TEMP_DIR, f"{hashed}.pdf")
         r_path = os.path.join(
@@ -128,6 +124,24 @@ def process_json(data):
 
         format = data.get('imgFormat', 'png')
         print('BMP branch: wrote', r_path)
+    else:
+        output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
+        input_path = '/'.join([TEMP_DIR, f"{hashed}.tex"])
+
+
+        pandoc_args = [
+            "pandoc",
+            "-f", "context" if engine == "context" else "latex",
+            input_path,
+            "-o", output_path
+        ]
+
+        success, out, err = run_subprocess(pandoc_args)
+        print('Pandoc STDOUT:', out)
+        print('Pandoc STDERR:', err)
+
+        if not success:
+            raise RuntimeError(f"Pandoc failed: {err or out}")
 
     return hashed, format, name
 
@@ -144,6 +158,15 @@ def api():
     try:
         hashed, format, name = process_json(incoming_data)
         print(format, '====================')
+        
+        if len([f for f in os.listdir(TEMP_DIR) if re.compile(rf"{hashed}-\d+\.{format}").match(f)]) > 1:
+            with zipfile.ZipFile(os.path.join(TEMP_DIR, f"{hashed}.zip"), 'w', zipfile.ZIP_DEFLATED) as zip_file:
+                pattern = re.compile(rf"{hashed}-\d+\.{format}")
+                for filename in os.listdir(TEMP_DIR):
+                    if pattern.match(filename):
+                        full_path = os.path.join(TEMP_DIR, filename)
+                        zip_file.write(full_path, arcname=name+'-'+filename.split('-')[1]) # 
+                format = "zip"
         path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
         print(path, '@@@@@@')
         if not os.path.exists(path):

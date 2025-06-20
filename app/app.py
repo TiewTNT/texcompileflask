@@ -23,7 +23,8 @@ MIMETYPES = {
 
 
 def clean_temp_dir():
-    """Deletes all files in the temp directory."""
+    """Ensure the temp directory exists and remove all files inside it."""
+    os.makedirs(TEMP_DIR, exist_ok=True)
     for filename in os.listdir(TEMP_DIR):
         file_path = os.path.join(TEMP_DIR, filename)
         try:

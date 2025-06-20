@@ -1,33 +1,30 @@
+# Base image with LaTeX circus already installed
 FROM texlive/texlive:latest-full
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 python3-venv python3-pip imagemagick pandoc \
+# ---- 1. System packages ----------------------------------------------------
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 python3-venv imagemagick pandoc \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set python and pip as default
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
-    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+# ---- 2. Python virtual environment (PEP 668 force-field) -------------------
+ENV VENV_PATH=/opt/venv
+RUN python3 -m venv $VENV_PATH
+ENV PATH="$VENV_PATH/bin:$PATH"      # makes `python`, `pip`, etc. point to venv
 
-# Upgrade pip and core tools
-RUN python -m pip install --upgrade pip setuptools wheel
+# ---- 3. Upgrade core Python tooling (inside venv, so nobody cries) ----------
+RUN pip install --upgrade pip setuptools wheel
 
-# Set working directory
+# ---- 4. App setup ----------------------------------------------------------
 WORKDIR /app
 
-# Environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-
-# Install dependencies
+# → dependency layer first for better caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the app
+# → bring in the rest of the source
 COPY . .
 
-# Expose the application port
+# ---- 5. Gunicorn party -----------------------------------------------------
 EXPOSE 8000
-
-# Run the app using gunicorn
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "app:app"]

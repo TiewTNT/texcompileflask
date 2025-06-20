@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
-RUN python3 -m ensurepip --upgrade && python3 -m pip install --upgrade pip setuptools
+# WHY, DOCKERFILE, WHY?
+# I JUST WANT TO RUN MY PYTHON APP!
 
 
 WORKDIR /app

@@ -76,29 +76,26 @@ def process_json(data):
     with open(tex_path, 'w', encoding='utf-8') as f:
         f.write(data.get('tex', 'user did not send TeX'))
 
-    if format == 'pdf' or format == 'bmp':
-        if engine == "context":
-            args = [
-                'context',
-                '--batchmode',               # quiet mode (like nonstopmode)
-                f'--result={hashed}.pdf',
-                f'--path={TEMP_DIR}',
-                tex_filename.replace(os.sep, '/')
-            ]
-            success, out, err = run_subprocess(args, cwd=TEMP_DIR)
-        else:
-            args = [
-                engine,
-                f'-jobname={hashed}',
-                '-interaction=nonstopmode',
-                f'-output-directory={TEMP_DIR}',
-                tex_path.replace(os.sep, '/')
-            ]
-            success, out, err = run_subprocess(args)
-        print('LaTeX STDOUT:', out)
-        print('LaTeX STDERR:', err)
-        if not success:
-            raise RuntimeError(f"LaTeX failed: {err or out}")
+    if engine == "context":
+        args = [
+            'context',
+            '--batchmode',               # quiet mode (like nonstopmode)
+            f'--result={hashed}.pdf',
+            f'--path={TEMP_DIR}',
+            tex_filename.replace(os.sep, '/')
+        ]
+        success, out, err = run_subprocess(args, cwd=TEMP_DIR)
+    else:
+        args = [
+            engine,
+            f'-jobname={hashed}',
+            '-interaction=nonstopmode',
+            f'-output-directory={TEMP_DIR}',
+            tex_path.replace(os.sep, '/')
+        ]
+        success, out, err = run_subprocess(args)
+    print('LaTeX STDOUT:', out)
+    print('LaTeX STDERR:', err)
 
     if format == 'bmp':
         dpi = data.get('dpi', 200)
@@ -124,14 +121,14 @@ def process_json(data):
 
         format = data.get('imgFormat', 'png')
         print('BMP branch: wrote', r_path)
-    else:
+    elif format != 'pdf':
         output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
         input_path = '/'.join([TEMP_DIR, f"{hashed}.tex"])
 
 
         pandoc_args = [
             "pandoc",
-            "-f", "context" if engine == "context" else "latex",
+            "-f", "tex",
             input_path,
             "-o", output_path
         ]
@@ -142,6 +139,8 @@ def process_json(data):
 
         if not success:
             raise RuntimeError(f"Pandoc failed: {err or out}")
+        
+        print('Converted to', output_path)
 
     return hashed, format, name
 

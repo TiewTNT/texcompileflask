@@ -120,6 +120,7 @@ def process_json(data):
                 engine,
                 f'-jobname={hashed}',
                 '-interaction=nonstopmode',
+                '--shell-restricted',
                 f'-output-directory={TEMP_DIR}',
                 tex_path.replace(os.sep, '/')
             ]

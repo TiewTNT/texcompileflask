@@ -105,26 +105,28 @@ def process_json(data):
     with open(tex_path, 'w', encoding='utf-8') as f:
         f.write(data.get('tex', 'user did not send TeX'))
 
-    if engine == "context":
-        args = [
-            'context',
-            '--batchmode',               # quiet mode (like nonstopmode)
-            f'--result={hashed}.pdf',
-            f'--path={TEMP_DIR}',
-            tex_filename.replace(os.sep, '/')
-        ]
-        success, out, err = run_subprocess(args, cwd=TEMP_DIR)
-    else:
-        args = [
-            engine,
-            f'-jobname={hashed}',
-            '-interaction=nonstopmode',
-            f'-output-directory={TEMP_DIR}',
-            tex_path.replace(os.sep, '/')
-        ]
-        success, out, err = run_subprocess(args)
-    print('LaTeX STDOUT:', out)
-    print('LaTeX STDERR:', err)
+    if format in ['pdf', 'html', 'md', 'bmp']:
+        if engine == "context":
+            args = [
+                'context',
+                '--batchmode',               # quiet mode (like nonstopmode)
+                f'--result={hashed}.pdf',
+                f'--path={TEMP_DIR}',
+                tex_filename.replace(os.sep, '/')
+            ]
+            success, out, err = run_subprocess(args, cwd=TEMP_DIR)
+        else:
+            args = [
+                engine,
+                f'-jobname={hashed}',
+                '-interaction=nonstopmode',
+                f'-output-directory={TEMP_DIR}',
+                tex_path.replace(os.sep, '/')
+            ]
+            run_subprocess(args)
+            success, out, err = run_subprocess(args)
+        print('LaTeX STDOUT:', out)
+        print('LaTeX STDERR:', err)
 
     if format == 'bmp':
         dpi = data.get('dpi', 200)
@@ -155,10 +157,10 @@ def process_json(data):
             pdf_to_html(os.path.join(TEMP_DIR, f"{hashed}.pdf"), os.path.join(
                 TEMP_DIR, f"{hashed}.html"))
             output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
-            input_path = '/'.join([TEMP_DIR, f"{hashed}.html"])
+            input_path = '\\'.join([TEMP_DIR, f"{hashed}.html"])
         else:
             output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
-            input_path = '/'.join([TEMP_DIR, f"{hashed}.html"])
+            input_path = '\\'.join([TEMP_DIR, f"{hashed}.tex"])
         pandoc_args = [
     "pandoc",
     "-f", "html" if format in ['html', 'md'] else "latex",

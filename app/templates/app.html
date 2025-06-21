@@ -28,11 +28,11 @@
 
         <label for="format">Output Format:</label>
         <select id="format">
-          <option value="pdf">PDF</option>
+          <option value="pdf"><strong>PDF</strong></option>
+          <option value="bmp"><strong>Raster</strong></option>
           <option value="html">HTML</option>
           <option value="md">Markdown</option>
           <option value="text">Plain Text</option>
-          <option value="bmp">Bitmap</option>
         </select><br><br>
 
         <div id="bmpOptions" style="display: none;">
@@ -69,8 +69,7 @@
         type
         conversion when you select HTML or Markdown. Flask is used here to make the website itself. ImageMagick is used
         for the PDF to raster image conversion.
-      PDFMiner is used to translate PDF to HTML.</br>Note: you can't convert ConTeXt into other formats other than bitmaps (like PNGs) or HTML. 
-      Doing so will result in a broken file.</p>
+      PDFMiner is used to translate PDF to HTML.</br><strong>Note that using formats other than PDF or raster will almost always result in broken files.</strong></p>
     </div>
   </div>
 

@@ -1,3 +1,9 @@
+from io import BytesIO
+from pdfminer.pdfinterp import PDFResourceManager
+from io import StringIO
+from pdfminer.converter import HTMLConverter
+from pdfminer.layout import LAParams
+from pdfminer.high_level import extract_text_to_fp
 from flask import Flask, request, send_file, render_template, jsonify
 import flask_cors
 import subprocess
@@ -28,8 +34,31 @@ MIMETYPES = {
     'tiff': 'image/tiff',
     'avif': 'image/avif',
     'bmp':  'image/bmp',
-    'epub': 'application/epub+zip',
 }
+
+
+def pdf_to_html(pdf_path, output_html_path):
+    """
+    Convert a PDF to HTML using pdfminer.six without triggering codec-on-text-stream errors.
+    """
+    laparams = LAParams()
+    buffer = BytesIO()
+
+    # Extract HTML into a binary buffer (BytesIO honours the default 'utf-8' codec)
+    with open(pdf_path, 'rb') as pdf_file:
+        extract_text_to_fp(
+            pdf_file,
+            buffer,
+            laparams=laparams,
+            output_type='html'
+        )
+
+    # Decode once, then write to your text file
+    html = buffer.getvalue().decode('utf-8')
+    buffer.close()
+
+    with open(output_html_path, 'w', encoding='utf-8') as html_file:
+        html_file.write(html)
 
 
 def clean_temp_dir():
@@ -122,16 +151,23 @@ def process_json(data):
         format = data.get('imgFormat', 'png')
         print('BMP branch: wrote', r_path)
     elif format != 'pdf':
-        output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
-        input_path = '/'.join([TEMP_DIR, f"{hashed}.tex"])
-
-
+        if format in ['html', 'md']:
+            pdf_to_html(os.path.join(TEMP_DIR, f"{hashed}.pdf"), os.path.join(
+                TEMP_DIR, f"{hashed}.html"))
+            output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
+            input_path = '/'.join([TEMP_DIR, f"{hashed}.html"])
+        else:
+            output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
+            input_path = '/'.join([TEMP_DIR, f"{hashed}.html"])
         pandoc_args = [
-            "pandoc",
-            "-f", "tex",
-            input_path,
-            "-o", output_path
-        ]
+    "pandoc",
+    "-f", "html" if format in ['html', 'md'] else "latex",
+    input_path,
+    "-o", output_path,
+]
+
+        if format == 'md':
+            pandoc_args.insert(1, "--markdown-fenced_divs")
 
         success, out, err = run_subprocess(pandoc_args)
         print('Pandoc STDOUT:', out)
@@ -139,7 +175,7 @@ def process_json(data):
 
         if not success:
             raise RuntimeError(f"Pandoc failed: {err or out}")
-        
+
         print('Converted to', output_path)
 
     return hashed, format, name
@@ -157,14 +193,15 @@ def api():
     try:
         hashed, format, name = process_json(incoming_data)
         print(format, '====================')
-        
+
         if len([f for f in os.listdir(TEMP_DIR) if re.compile(rf"{hashed}-\d+\.{format}").match(f)]) > 1:
             with zipfile.ZipFile(os.path.join(TEMP_DIR, f"{hashed}.zip"), 'w', zipfile.ZIP_DEFLATED) as zip_file:
                 pattern = re.compile(rf"{hashed}-\d+\.{format}")
                 for filename in os.listdir(TEMP_DIR):
                     if pattern.match(filename):
                         full_path = os.path.join(TEMP_DIR, filename)
-                        zip_file.write(full_path, arcname=name+'-'+filename.split('-')[1]) # 
+                        zip_file.write(full_path, arcname=name +
+                                       '-'+filename.split('-')[1])
                 format = "zip"
         path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
         print(path, '@@@@@@')

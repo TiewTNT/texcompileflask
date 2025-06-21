@@ -32,7 +32,6 @@
           <option value="html">HTML</option>
           <option value="md">Markdown</option>
           <option value="text">Plain Text</option>
-          <option value="epub">EPUB</option>
           <option value="bmp">Bitmap</option>
         </select><br><br>
 
@@ -69,8 +68,9 @@
       <p>This simple API is powered by TeXLive, including its packages, for PDF generation and Pandoc for document
         type
         conversion when you select HTML or Markdown. Flask is used here to make the website itself. ImageMagick is used
-        for the PDF to raster image conversion.</br>
-      Note: File output types other than PDF or Bitmaps (such as PNGs) are not supported with ConTeXt.</p>
+        for the PDF to raster image conversion.
+      PDFMiner is used to translate PDF to HTML.</br>Note: you can't convert ConTeXt into other formats other than bitmaps (like PNGs) or HTML. 
+      Doing so will result in a broken file.</p>
     </div>
   </div>
 

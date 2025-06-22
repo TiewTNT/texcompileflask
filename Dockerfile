@@ -1,8 +1,8 @@
 FROM texlive/texlive:latest-full
 
-RUN sudo apt-get update && \
-    sudo apt-get install -y --no-install-recommends \
-        python3 python3-venv imagemagick pandoc gnuplot pygments ghostscript \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 python3-venv imagemagick pandoc gnuplot ghostscript \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV VENV_PATH=/opt/venv

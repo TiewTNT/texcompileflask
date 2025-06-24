@@ -187,10 +187,11 @@ def home():
 @app.route('/api', methods=['POST'])
 def api():
     @after_this_request
-    def clean_temp_dir():
+    def clean_temp_dir(response):
         """Ensure the temp directory exists and remove it."""
         os.makedirs(TEMP_DIR, exist_ok=True)
         shutil.rmtree(TEMP_DIR, ignore_errors=True)
+        return response
 
     incoming_data = request.get_json()
     try:

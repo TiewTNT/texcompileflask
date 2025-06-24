@@ -1,10 +1,7 @@
 from io import BytesIO
-from pdfminer.pdfinterp import PDFResourceManager
-from io import StringIO
-from pdfminer.converter import HTMLConverter
 from pdfminer.layout import LAParams
 from pdfminer.high_level import extract_text_to_fp
-from flask import Flask, request, send_file, render_template, jsonify, after_this_request
+from flask import Flask, request, send_file, render_template, jsonify, Response
 import shutil
 import flask_cors
 import subprocess
@@ -61,8 +58,6 @@ def pdf_to_html(pdf_path, output_html_path):
 
     with open(output_html_path, 'w', encoding='utf-8') as html_file:
         html_file.write(html)
-
-
 
 
 def run_subprocess(args, shell=False, cwd='.'):
@@ -158,11 +153,11 @@ def process_json(data):
             output_path = os.path.join(TEMP_DIR, f"{hashed}.{format}")
             input_path = '\\'.join([TEMP_DIR, f"{hashed}.tex"])
         pandoc_args = [
-    "pandoc",
-    "-f", "html" if format in ['html', 'md'] else "latex",
-    input_path,
-    "-o", output_path,
-]
+            "pandoc",
+            "-f", "html" if format in ['html', 'md'] else "latex",
+            input_path,
+            "-o", output_path,
+        ]
 
         if format == 'md':
             pandoc_args.insert(1, "--markdown-fenced_divs")
@@ -186,12 +181,6 @@ def home():
 
 @app.route('/api', methods=['POST'])
 def api():
-    @after_this_request
-    def clean_temp_dir(response):
-        """Ensure the temp directory exists and remove it."""
-        os.makedirs(TEMP_DIR, exist_ok=True)
-        shutil.rmtree(TEMP_DIR, ignore_errors=True)
-        return response
 
     incoming_data = request.get_json()
     try:
@@ -213,18 +202,27 @@ def api():
             print(path, '←')
             return jsonify({"error": f"File generation failed ({path} does not exist.)"}), 500
 
-        return send_file(
+        response = send_file(
             path,
             mimetype=MIMETYPES.get(format, 'application/octet-stream'),
             as_attachment=True,
             download_name=f"{name}.{format}"
         )
+        @response.call_on_close
+        def clean_temp_dir():
+            """Ensure the temp directory exists and remove it."""
+            global TEMP_DIR
+            print('Cleaning up temp directory:', TEMP_DIR)
+            os.makedirs(TEMP_DIR, exist_ok=True)
+            shutil.rmtree(TEMP_DIR, ignore_errors=True)
+        
+        return response
     except Exception as e:
         print('Error:', e)
         return jsonify({"error": str(e)}), 500
 
 
 if __name__ == '__main__':
-    if not os.path.exists(TEMP_DIR):
-        os.makedirs(TEMP_DIR)
+    if not os.path.exists(TEMP):
+        os.makedirs(TEMP)
     app.run()

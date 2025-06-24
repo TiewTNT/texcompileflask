@@ -94,6 +94,7 @@ def process_json(data):
         os.makedirs(TEMP_DIR, exist_ok=True)
 
     hashed = hashlib.sha256(str(data).encode()).hexdigest()
+    TEMP_DIR = os.path.join(TEMP_DIR, hashed)
     engine = data.get('engine', 'pdflatex')
     name = os.path.splitext(data.get('name', 'file'))[0]
     format = data.get('format', 'pdf')

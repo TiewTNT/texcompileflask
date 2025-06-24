@@ -4,7 +4,8 @@ from io import StringIO
 from pdfminer.converter import HTMLConverter
 from pdfminer.layout import LAParams
 from pdfminer.high_level import extract_text_to_fp
-from flask import Flask, request, send_file, render_template, jsonify
+from flask import Flask, request, send_file, render_template, jsonify, after_this_request
+import shutil
 import flask_cors
 import subprocess
 import hashlib
@@ -19,8 +20,9 @@ flask_cors.CORS(app)
 # path so Flask can reliably locate the generated output regardless of the
 # current working directory.
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-TEMP_DIR = os.path.join(BASE_DIR, 'temp')
-print('Using temp directory:', TEMP_DIR)
+TEMP = os.path.join(BASE_DIR, 'temp')
+TEMP_DIR = os.path.join(TEMP, 'tempdir')
+print('Using temp directory:', TEMP)
 MIMETYPES = {
     'pdf': 'application/pdf',
     'zip': 'application/zip',
@@ -61,16 +63,6 @@ def pdf_to_html(pdf_path, output_html_path):
         html_file.write(html)
 
 
-def clean_temp_dir():
-    """Ensure the temp directory exists and remove all files inside it."""
-    os.makedirs(TEMP_DIR, exist_ok=True)
-    for filename in os.listdir(TEMP_DIR):
-        file_path = os.path.join(TEMP_DIR, filename)
-        try:
-            os.remove(file_path)
-            print(f"Deleted: {filename}")
-        except Exception as e:
-            print(f"Failed to delete {filename}: {e}")
 
 
 def run_subprocess(args, shell=False, cwd='.'):
@@ -90,11 +82,13 @@ def run_subprocess(args, shell=False, cwd='.'):
 
 
 def process_json(data):
-    if not os.path.exists(TEMP_DIR):
-        os.makedirs(TEMP_DIR, exist_ok=True)
+    global TEMP_DIR
+    if not os.path.exists(TEMP):
+        os.makedirs(TEMP, exist_ok=True)
 
     hashed = hashlib.sha256(str(data).encode()).hexdigest()
-    TEMP_DIR = os.path.join(TEMP_DIR, hashed)
+    TEMP_DIR = os.path.join(TEMP, hashed)
+    os.makedirs(TEMP_DIR, exist_ok=True)
     engine = data.get('engine', 'pdflatex')
     name = os.path.splitext(data.get('name', 'file'))[0]
     format = data.get('format', 'pdf')
@@ -192,7 +186,12 @@ def home():
 
 @app.route('/api', methods=['POST'])
 def api():
-    clean_temp_dir()
+    @after_this_request
+    def clean_temp_dir():
+        """Ensure the temp directory exists and remove it."""
+        os.makedirs(TEMP_DIR, exist_ok=True)
+        shutil.rmtree(TEMP_DIR, ignore_errors=True)
+
     incoming_data = request.get_json()
     try:
         hashed, format, name = process_json(incoming_data)

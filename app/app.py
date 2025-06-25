@@ -76,24 +76,25 @@ def run_subprocess(args, shell=False, cwd='.'):
         return False, '', str(e)
 
 
-def process_json(data):
+def process_json():
     global TEMP_DIR
     if not os.path.exists(TEMP):
         os.makedirs(TEMP, exist_ok=True)
 
-    hashed = hashlib.sha256(str(data).encode()).hexdigest()
+    hashed = hashlib.sha256(request.get_data()).hexdigest()
     TEMP_DIR = os.path.join(TEMP, hashed)
     os.makedirs(TEMP_DIR, exist_ok=True)
-    engine = data.get('engine', 'pdflatex')
-    name = os.path.splitext(data.get('name', 'file'))[0]
-    format = data.get('format', 'pdf')
+    engine = request.form.get('engine', 'pdflatex')
+    name = os.path.splitext(request.files.get('tex').filename)[0]
+    format = request.form.get('format', 'pdf')
 
     tex_filename = f'{hashed}.tex'
     tex_path = os.path.join(TEMP_DIR, tex_filename)
 
-    # Write TeX file
-    with open(tex_path, 'w', encoding='utf-8') as f:
-        f.write(data.get('tex', 'user did not send TeX'))
+    request.files.get('tex').save(tex_path)
+
+    for file in request.files.getlist('attachments'):
+        file.save(os.path.join(TEMP_DIR, file.filename))
 
     if format in ['pdf', 'html', 'md', 'bmp']:
         if engine == "context":
@@ -120,10 +121,10 @@ def process_json(data):
         print('LaTeX STDERR:', err)
 
     if format == 'bmp':
-        dpi = data.get('dpi', 200)
+        dpi = request.form.get('dpi', 200)
         pdf_path = os.path.join(TEMP_DIR, f"{hashed}.pdf")
         r_path = os.path.join(
-            TEMP_DIR, f"{hashed}.{data.get('imgFormat', 'png')}")
+            TEMP_DIR, f"{hashed}.{request.form.get('imgFormat', 'png')}")
 
         # run convert without shell (safer) and with full paths
         success, out, err = run_subprocess([
@@ -141,7 +142,7 @@ def process_json(data):
         if not success:
             raise RuntimeError(f"ImageMagick convert failed: {err or out}")
 
-        format = data.get('imgFormat', 'png')
+        format = request.form.get('imgFormat', 'png')
         print('BMP branch: wrote', r_path)
     elif format != 'pdf':
         if format in ['html', 'md']:
@@ -181,10 +182,8 @@ def home():
 
 @app.route('/api', methods=['POST'])
 def api():
-
-    incoming_data = request.get_json()
     try:
-        hashed, format, name = process_json(incoming_data)
+        hashed, format, name = process_json()
         print(format, '====================')
 
         if len([f for f in os.listdir(TEMP_DIR) if re.compile(rf"{hashed}-\d+\.{format}").match(f)]) > 1:

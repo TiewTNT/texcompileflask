@@ -61,7 +61,8 @@
           });
         </script>
       </div>
-
+      <p>Select external files below:</p>
+      <input type="file" id="otherFiles" multiple></input><br><br>
       <button onclick="uploadFile()">Generate</button>
     </div>
     <div>
@@ -77,60 +78,55 @@
 
 
   <script>
-    function uploadFile() {
-      const fileInput = document.getElementById("texFile");
-      const engine = document.getElementById("engine").value;
-      const format = document.getElementById("format").value;
-      const dpi = document.getElementById("dpi").value;
-      const imgFormat = document.getElementById("imgFormat").value;
+  function uploadFile() {
+    const fileInput = document.getElementById("texFile");
+    const otherFilesInput = document.getElementById("otherFiles");
+    const engine = document.getElementById("engine").value;
+    const format = document.getElementById("format").value;
+    const dpi = document.getElementById("dpi").value;
+    const imgFormat = document.getElementById("imgFormat").value;
 
-      if (!fileInput.files.length) {
-        console.log("Please select a .tex file first.");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        const texContent = event.target.result;
-
-        fetch("/api", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            tex: texContent,
-            engine,
-            format,
-            name: fileInput.files[0].name,
-            dpi,
-            imgFormat,
-            time: new Date().getTime() // Add a timestamp to prevent caching issues
-          })
-        })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`${format.toUpperCase()} generation failed.`);
-            }
-            // Extract the filename from Content-Disposition
-            const cd = response.headers.get("Content-Disposition") || "";
-            const match = cd.match(/filename="?(.+?)"?($|;)/);
-            const filename = match ? match[1] : `file.${format}`;
-
-            return response.blob().then(blob => ({ blob, filename }));
-          })
-          .then(({ blob, filename }) => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = filename;
-            a.click();
-            window.URL.revokeObjectURL(url);
-          })
-          .catch(error => console.log("Error: " + error.message));
-      };
-
-      reader.readAsText(fileInput.files[0]);
+    if (!fileInput.files.length) {
+      console.log("Please select a .tex file first.");
+      return;
     }
-  </script>
+
+    const formData = new FormData();
+    formData.append("tex", fileInput.files[0]); // Main .tex file
+
+    for (const file of otherFilesInput.files) {
+      formData.append("attachments", file); // Multiple files with same name = list
+    }
+
+    formData.append("engine", engine);
+    formData.append("format", format);
+    formData.append("dpi", dpi);
+    formData.append("imgFormat", imgFormat);
+    formData.append("time", new Date().getTime());
+
+    fetch("/api", {
+      method: "POST",
+      body: formData
+    })
+      .then(response => {
+        if (!response.ok) throw new Error(`${format.toUpperCase()} generation failed.`);
+        const cd = response.headers.get("Content-Disposition") || "";
+        const match = cd.match(/filename="?(.+?)"?($|;)/);
+        const filename = match ? match[1] : `file.${format}`;
+        return response.blob().then(blob => ({ blob, filename }));
+      })
+      .then(({ blob, filename }) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(error => console.log("Error: " + error.message));
+  }
+</script>
+
 
 </body>
 

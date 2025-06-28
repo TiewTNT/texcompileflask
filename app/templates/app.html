@@ -8,7 +8,8 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Ledger&display=swap" rel="stylesheet"><!-- Ledger font for headings -->
+  <link href="https://fonts.googleapis.com/css2?family=Ledger&display=swap" rel="stylesheet">
+  <!-- Ledger font for headings -->
 </head>
 
 <body>
@@ -25,6 +26,38 @@
           <option value="lualatex">lualatex</option>
           <option value="context">ConTeXt</option>
         </select><br><br>
+
+        <div class="checkbox-dropdown" id="extrasDropdown">
+          <div class="checkbox-toggle" onclick="toggleExtras()">+ Advanced Options</div>
+          <div class="checkbox-options" id="extraCheckboxes">
+            <label><input type="checkbox" name="extraTools" value="bibtex 3"> BibTeX</label>
+          </div>
+        </div>
+
+        <script>
+          function toggleExtras() {
+            const box = document.getElementById("extraCheckboxes");
+            box.style.display = box.style.display === "block" ? "none" : "block";
+          }
+
+          // Hide checkbox dropdown when ConTeXt is selected
+          document.getElementById("engine").addEventListener("change", function () {
+            const dropdown = document.getElementById("extrasDropdown");
+            if (this.value === "context") {
+              dropdown.style.display = "none";
+            } else {
+              dropdown.style.display = "block";
+            }
+          });
+
+          // Hide it initially if "context" is preselected
+          window.addEventListener("DOMContentLoaded", function () {
+            const engine = document.getElementById("engine").value;
+            if (engine === "context") {
+              document.getElementById("extrasDropdown").style.display = "none";
+            }
+          });
+        </script>
 
         <label for="format">Output Format:</label>
         <select id="format">
@@ -70,7 +103,8 @@
         type
         conversion when you select HTML or Markdown. Flask is used here to make the website itself. ImageMagick is used
         for the PDF to raster image conversion.
-      PDFMiner is used to translate PDF to HTML.</br><strong>Note that using formats other than PDF or raster will almost always result in broken files.</strong></p>
+        PDFMiner is used to translate PDF to HTML.</br><strong>Note that using formats other than PDF or raster will
+          almost always result in broken files.</strong></p>
     </div>
   </div>
 
@@ -78,54 +112,57 @@
 
 
   <script>
-  function uploadFile() {
-    const fileInput = document.getElementById("texFile");
-    const otherFilesInput = document.getElementById("otherFiles");
-    const engine = document.getElementById("engine").value;
-    const format = document.getElementById("format").value;
-    const dpi = document.getElementById("dpi").value;
-    const imgFormat = document.getElementById("imgFormat").value;
+    function uploadFile() {
+      const fileInput = document.getElementById("texFile");
+      const otherFilesInput = document.getElementById("otherFiles");
+      const engine = document.getElementById("engine").value;
+      const format = document.getElementById("format").value;
+      const dpi = document.getElementById("dpi").value;
+      const imgFormat = document.getElementById("imgFormat").value;
 
-    if (!fileInput.files.length) {
-      console.log("Please select a .tex file first.");
-      return;
-    }
+      if (!fileInput.files.length) {
+        console.log("Please select a .tex file first.");
+        return;
+      }
 
-    const formData = new FormData();
-    formData.append("tex", fileInput.files[0]); // Main .tex file
+      const formData = new FormData();
+      formData.append("tex", fileInput.files[0]); // Main .tex file
 
-    for (const file of otherFilesInput.files) {
-      formData.append("attachments", file); // Multiple files with same name = list
-    }
+      for (const file of otherFilesInput.files) {
+        formData.append("attachments", file); // Multiple files with same name = list
+      }
 
-    formData.append("engine", engine);
-    formData.append("format", format);
-    formData.append("dpi", dpi);
-    formData.append("imgFormat", imgFormat);
-    formData.append("time", new Date().getTime());
+      formData.append("engine", engine);
+      formData.append("format", format);
+      formData.append("dpi", dpi);
+      formData.append("imgFormat", imgFormat);
+      formData.append("time", new Date().getTime());
+      document
+        .querySelectorAll('input[name="extraTools"]:checked')
+        .forEach(cb => formData.append("extraTools", cb.value));
 
-    fetch("/api", {
-      method: "POST",
-      body: formData
-    })
-      .then(response => {
-        if (!response.ok) throw new Error(`${format.toUpperCase()} generation failed.`);
-        const cd = response.headers.get("Content-Disposition") || "";
-        const match = cd.match(/filename="?(.+?)"?($|;)/);
-        const filename = match ? match[1] : `file.${format}`;
-        return response.blob().then(blob => ({ blob, filename }));
+      fetch("/api", {
+        method: "POST",
+        body: formData
       })
-      .then(({ blob, filename }) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(error => console.log("Error: " + error.message));
-  }
-</script>
+        .then(response => {
+          if (!response.ok) throw new Error(`${format.toUpperCase()} generation failed.`);
+          const cd = response.headers.get("Content-Disposition") || "";
+          const match = cd.match(/filename="?(.+?)"?($|;)/);
+          const filename = match ? match[1] : `file.${format}`;
+          return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.log("Error: " + error.message));
+    }
+  </script>
 
 
 </body>

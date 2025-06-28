@@ -52,9 +52,9 @@ input[type=number] {
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
 }
 
 button {
@@ -85,4 +85,24 @@ p {
     text-align: justify;
     display: block;
     margin-right: auto;
+}
+
+.checkbox-dropdown {
+    margin-top: 10px;
+}
+
+.checkbox-toggle {
+    cursor: pointer;
+    background-color: #343335;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.checkbox-options {
+    display: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #343335;
 }

@@ -107,6 +107,8 @@ def process_json():
             ]
             success, out, err = run_subprocess(args, cwd=TEMP_DIR)
         else:
+            print("FORM DATA EXTRA TOOLS:", request.form.getlist('extraTools'))
+
             args = [
                 engine,
                 f'-jobname={hashed}',
@@ -116,7 +118,18 @@ def process_json():
                 tex_path.replace(os.sep, '/')
             ]
             run_subprocess(args)
-            success, out, err = run_subprocess(args)
+            for tool in request.form.getlist('extraTools'):
+                print('Running extra tool:', tool)
+                run_subprocess([tool.split(' ')[0], hashed], cwd=TEMP_DIR)
+                # print('Applied command:', ' '.join([tool.split(' ')[0], hashed]), 'with cwd:', TEMP_DIR)
+            compiles = [2]
+            for tool in request.form.getlist('extraTools'):
+                compiles.append(int(tool.split(' ')[1]))
+            if max(compiles) > 2:
+                for i in range(max(compiles) - 2):
+                    run_subprocess(args)
+                    
+        success, out, err = run_subprocess(args)
         print('LaTeX STDOUT:', out)
         print('LaTeX STDERR:', err)
 
